@@ -3,16 +3,13 @@ import util
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Welcome to the Home Price Prediction API!"
-
 @app.route('/get_location_names', methods=['GET'])
 def get_location_names():
     response = jsonify({
         'locations': util.get_location_names()
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
+
     return response
 
 @app.route('/predict_home_price', methods=['POST'])
@@ -31,9 +28,10 @@ def predict_home_price():
         'estimated_price': estimated_price
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
+
     return response
 
 if __name__ == "__main__":
     print("Starting Python Flask Server For Home Price Prediction...")
     util.load_saved_artifacts()
-    app.run(host="0.0.0.0", port=10000)
+    app.run()
