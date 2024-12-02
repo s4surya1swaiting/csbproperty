@@ -1,20 +1,15 @@
 import json
 import numpy as np
 import pickle
-import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import LabelEncoder
 
 # Global variables to store model and data
 __locations = None
 __model = None
 __data_columns = None
-__le = None
-
 
 def load_saved_artifacts():
     """
-    Loads saved artifacts (model, data columns, locations, label encoder) into memory.
+    Loads saved artifacts (model, data columns, locations) into memory.
     """
     print("Loading saved artifacts...start")
 
@@ -35,13 +30,11 @@ def load_saved_artifacts():
 
     print("Loading saved artifacts...done")
 
-
 def get_location_names():
     """
     Returns a list of available location names.
     """
     return __locations
-
 
 def get_estimated_price(location, total_sqft, bed, bath):
     """
@@ -59,9 +52,6 @@ def get_estimated_price(location, total_sqft, bed, bath):
     try:
         # Convert input location to lowercase
         location = location.lower()
-
-        # Debugging: print the list of available locations
-        print(f"Available locations: {__locations}")
 
         # Validate input
         if location not in __locations:
@@ -91,51 +81,3 @@ def get_estimated_price(location, total_sqft, bed, bath):
         return str(e)
     except Exception as e:
         return f"Error occurred: {str(e)}"
-
-
-def predict_price_from_input(input_data):
-    """
-    Predicts the price based on the input data dictionary.
-
-    Parameters:
-        input_data (dict): Dictionary containing 'location', 'total_sqft', 'bed', and 'bath'.
-
-    Returns:
-        float: Predicted price.
-    """
-    location = input_data.get('location')
-    total_sqft = input_data.get('total_sqft', 0)
-    bed = input_data.get('bed', 0)
-    bath = input_data.get('bath', 0)
-
-    return get_estimated_price(location, total_sqft, bed, bath)
-
-
-# Helper function to encode locations using LabelEncoder
-def encode_location(location):
-    """
-    Encodes the location using LabelEncoder.
-
-    Parameters:
-        location (str): Location name.
-
-    Returns:
-        int: Encoded location value.
-    """
-    global __le
-    return __le.transform([location])[0]
-
-
-# Save the artifacts
-def save_artifacts():
-    """
-    Save the trained model, column names, and location names as artifacts.
-    """
-    with open('models/home_price_model.pickle', 'wb') as f:
-        pickle.dump(__model, f)
-
-    with open('models/columns.json', 'w') as f:
-        json.dump({'data_columns': __data_columns}, f)
-
-    with open('models/label_encoder.pkl', 'wb') as f:
-        pickle.dump(__le, f)
