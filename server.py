@@ -1,7 +1,11 @@
 from flask import Flask, request, jsonify
-import util
+from flask_cors import CORS
+import util  # Assuming util.py is in the same directory as server.py
 
 app = Flask(__name__)
+
+# Enable CORS for all domains (you can restrict it to specific domains)
+CORS(app)
 
 @app.route('/get_location_names', methods=['GET'])
 def get_location_names():
@@ -18,6 +22,7 @@ def get_location_names():
         return response
     except Exception as e:
         return jsonify({'error': f"Failed to fetch location names. Details: {str(e)}"}), 500
+
 
 @app.route('/predict_home_price', methods=['POST'])
 def predict_home_price():
@@ -58,10 +63,11 @@ def predict_home_price():
     except Exception as e:
         return jsonify({'error': f"Prediction failed. Details: {str(e)}"}), 500
 
+
 if __name__ == "__main__":
     print("Starting Python Flask Server For Home Price Prediction...")
     try:
-        util.load_saved_artifacts()
+        util.load_saved_artifacts()  # Make sure you have a utility function to load the model
         app.run(host='0.0.0.0', port=5000, debug=True)  # Accessible on local network
     except Exception as e:
         print(f"Failed to start the server. Details: {str(e)}")
