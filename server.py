@@ -24,25 +24,26 @@ def get_location_names():
         return jsonify({'error': f"Failed to fetch location names. Details: {str(e)}"}), 500
 
 
-@app.route('/predict_home_price', methods=['POST'])
+@app.route('/predict_home_price', methods=['GET'])
 def predict_home_price():
     """
     Endpoint to predict home price based on input features.
     Expects:
         - total_sqft (float): Total area in square feet.
         - location (str): Location name.
-        - bed (int): Number of bedrooms.
+        - bhk (int): Number of bedrooms (formerly bed).
         - bath (int): Number of bathrooms.
+        - balcony (int): Number of balconies (optional).
     Returns:
         JSON: Estimated price or error message.
     """
     try:
-        # Parse input data
-        data = request.form
-        total_sqft = float(data.get('total_sqft', 0))
-        location = data.get('location', '').strip()
-        bed = int(data.get('bed', 0))
-        bath = int(data.get('bath', 0))
+        # Parse input data from the URL query parameters
+        location = request.args.get('location', '').strip()
+        total_sqft = float(request.args.get('total_sqft', 0))
+        bed = int(request.args.get('bhk', 0))  # Use 'bhk' as bedrooms
+        bath = int(request.args.get('bath', 0))
+        balcony = int(request.args.get('balcony', 0))  # Optional, adjust if needed
 
         # Validate inputs
         if not location or total_sqft <= 0 or bed <= 0 or bath <= 0:
@@ -62,7 +63,6 @@ def predict_home_price():
         return jsonify({'error': 'Invalid input format. Please check the input values.'}), 400
     except Exception as e:
         return jsonify({'error': f"Prediction failed. Details: {str(e)}"}), 500
-
 
 if __name__ == "__main__":
     print("Starting Python Flask Server For Home Price Prediction...")
