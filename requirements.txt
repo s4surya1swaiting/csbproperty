@@ -1,4 +1,5 @@
 Flask
+Flask-Cors
+scikit-learn
 numpy
 pandas
-scikit-learn
