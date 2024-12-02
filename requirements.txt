@@ -1,4 +1,6 @@
 Flask
-numpy
 scikit-learn
+numpy
 pandas
+pickle5  # Optional, for compatibility with pickle if needed
+gunicorn # Recommended for running Flask in production (useful for deployment)
