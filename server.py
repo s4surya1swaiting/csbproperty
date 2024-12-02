@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import util
+import os
 
 app = Flask(__name__)
 
@@ -9,7 +10,6 @@ def get_location_names():
         'locations': util.get_location_names()
     })
     response.headers.add('Access-Control-Allow-Origin', '*')
-
     return response
 
 @app.route('/predict_home_price', methods=['POST'])
@@ -33,5 +33,13 @@ def predict_home_price():
 
 if __name__ == "__main__":
     print("Starting Python Flask Server For Home Price Prediction...")
+
+    # Load saved artifacts
     util.load_saved_artifacts()
-    app.run()
+
+    # Get the port from environment variable, default to 5000 if not set
+    port = int(os.environ.get("PORT", 5000))
+    print(f"Server is running on port {port}")
+
+    # Start Flask server, making it listen on the specified port
+    app.run(host="0.0.0.0", port=port)
